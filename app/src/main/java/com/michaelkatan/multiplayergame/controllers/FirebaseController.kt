@@ -16,7 +16,6 @@ object FirebaseController: Observable()
 
     fun login(email: String, password: String)
     {
-        Log.d("MyApp","in the login method")
         var user : FirebaseUser? = null
          fireAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(object : OnCompleteListener<AuthResult>
@@ -45,7 +44,7 @@ object FirebaseController: Observable()
     fun signUp(email: String, password: String)
     {
 
-        var user : FirebaseUser? = null
+        var user : FirebaseUser?
 
             fireAuth.createUserWithEmailAndPassword(email,password)
                     .addOnCompleteListener(object : OnCompleteListener<AuthResult>
@@ -61,6 +60,9 @@ object FirebaseController: Observable()
 
                             }else
                             {
+                                Log.d("MyApp",task.result.toString())
+                                Log.d("MyApp",task.exception.toString())
+
                                 setChanged()
                                 notifyObservers("signUp-false")
                             }

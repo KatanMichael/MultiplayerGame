@@ -37,7 +37,7 @@ class signUpFragment : Fragment(), Observer
         {
             fullName = signUp_fullName.text.toString()
             userName = signUp_userName.text.toString()
-            email = signUp_password.text.toString()
+            email = signUp_email.text.toString()
             password = signUp_password.text.toString()
 
 
@@ -65,12 +65,13 @@ class signUpFragment : Fragment(), Observer
         {
             activity?.supportFragmentManager?.beginTransaction()
                     ?.replace(R.id.main_fragment_placeHolder,MainScreen())?.commit()
+
             Log.d("MyApp","userFound")
 
         }
 
     }
-    fun makeToast(string: String)
+    private fun makeToast(string: String)
     {
         Toast.makeText(context,string, Toast.LENGTH_SHORT).show()
     }
