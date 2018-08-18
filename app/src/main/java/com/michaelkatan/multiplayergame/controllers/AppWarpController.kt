@@ -1,6 +1,7 @@
 package com.michaelkatan.multiplayergame.controllers
 
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient
+import com.shephertz.app42.gaming.multiplayer.client.command.WarpResponseResultCode
 import com.shephertz.app42.gaming.multiplayer.client.events.*
 import com.shephertz.app42.gaming.multiplayer.client.listener.*
 import java.util.*
@@ -11,11 +12,31 @@ object AppWarpController : Observable(), ConnectionRequestListener, RoomRequestL
 
     private val apiKey = "ec45835d8fd58440eabc5e954e6f206e28e51789af60b86873ee6b22ff02a57b"
     private val secretKey = "f0c8085432fc9bf6e4f8589553c576645aa77992c1f2c6668ffb8ee092f10062"
+    var warpClient : WarpClient? = null
 
-    private val warpClient = WarpClient.initialize(apiKey, secretKey)
 
-    fun loginWithEmail(userName: String) {
+    fun init()
+    {
+        WarpClient.initialize(apiKey, secretKey)
+        warpClient = WarpClient.getInstance()
 
+        setUp()
+    }
+    private fun setUp()
+    {
+        warpClient?.addLobbyRequestListener(this)
+        warpClient?.addChatRequestListener(this)
+        warpClient?.addZoneRequestListener(this)
+        warpClient?.addRoomRequestListener(this)
+        warpClient?.addConnectionRequestListener(this)
+        warpClient?.addNotificationListener(this)
+        warpClient?.addTurnBasedRoomListener(this)
+        warpClient?.addUpdateRequestListener(this)
+    }
+
+    fun loginWithEmail(userName: String)
+    {
+        warpClient!!.connectWithUserName(userName)
     }
 
 
@@ -24,8 +45,23 @@ object AppWarpController : Observable(), ConnectionRequestListener, RoomRequestL
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onConnectDone(p0: ConnectEvent?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onConnectDone(event: ConnectEvent?)
+    {
+        if (event != null)
+        {
+            if(event.result == WarpResponseResultCode.SUCCESS)
+            {
+                setChanged()
+                notifyObservers("onConnectDone-true")
+            }else
+            {
+                setChanged()
+                notifyObservers("onConnectDone-false")
+            }
+
+
+        }
+
     }
 
     override fun onInitUDPDone(p0: Byte) {

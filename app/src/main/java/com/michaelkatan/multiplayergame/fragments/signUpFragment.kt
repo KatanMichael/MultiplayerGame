@@ -10,7 +10,9 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.michaelkatan.multiplayergame.R
+import com.michaelkatan.multiplayergame.controllers.AppWarpController
 import com.michaelkatan.multiplayergame.controllers.FirebaseController
+import com.michaelkatan.multiplayergame.util.Util
 import kotlinx.android.synthetic.main.signup_fragment.*
 import kotlinx.android.synthetic.main.signup_fragment.view.*
 import java.util.*
@@ -20,12 +22,15 @@ class signUpFragment : Fragment(), Observer
 {
 
     val fireAuth = FirebaseAuth.getInstance()
+    val appWarpController = AppWarpController
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
         val view = inflater.inflate(R.layout.signup_fragment, container, false)
 
         val firebaseController = FirebaseController
 
+        appWarpController.addObserver(this)
         firebaseController.addObserver(this)
 
         var fullName : String
@@ -58,21 +63,29 @@ class signUpFragment : Fragment(), Observer
 
         if(respond.equals("signUp-false"))
         {
-            makeToast("Registration Failed")
+            Util.makeToast( context,"Registration Failed")
             Log.d("MyApp","Registration Failed")
 
-        }else if(respond.equals("signUp-true"))
+        }
+        if(respond.equals("signUp-true"))
+        {
+            appWarpController.loginWithEmail(signUp_email.text.toString())
+        }
+
+        if(respond.equals("onConnectDone-true"))
         {
             activity?.supportFragmentManager?.beginTransaction()
                     ?.replace(R.id.main_fragment_placeHolder,MainScreen())?.commit()
 
-            Log.d("MyApp","userFound")
+        }
 
+        if(respond.equals("onConnectDone-false"))
+        {
+            Util.makeToast(context , "appWarp Fail")
         }
 
     }
-    private fun makeToast(string: String)
-    {
-        Toast.makeText(context,string, Toast.LENGTH_SHORT).show()
-    }
+
 }
+
+

@@ -13,7 +13,9 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.michaelkatan.multiplayergame.R
+import com.michaelkatan.multiplayergame.controllers.AppWarpController
 import com.michaelkatan.multiplayergame.controllers.FirebaseController
+import com.michaelkatan.multiplayergame.util.Util
 import kotlinx.android.synthetic.main.login_fragment.view.*
 import java.util.*
 
@@ -22,12 +24,16 @@ class loginFragment : Fragment(), Observer
 {
 
     val firebaseController = FirebaseController
+    val appWarpController = AppWarpController
+
 
     val fireAuth = FirebaseAuth.getInstance()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
         val view = inflater.inflate(R.layout.login_fragment, container,false)
 
+        appWarpController.init()
+        appWarpController.addObserver(this)
         firebaseController.addObserver(this)
 
         view.login_signInBtn.setOnClickListener()
@@ -62,22 +68,30 @@ class loginFragment : Fragment(), Observer
 
         if(respond.equals("signIn-false"))
             {
-                makeToast("Login Failed")
+                Util.makeToast(context,"Login Failed")
                 Log.d("MyApp","Login Failed")
 
-            }else if(respond.equals("signIn-true"))
-            {
-                activity?.supportFragmentManager?.beginTransaction()
-                        ?.replace(R.id.main_fragment_placeHolder,MainScreen())?.commit()
-                Log.d("MyApp","userFound")
-
             }
+        if(respond.equals("signIn-true"))
+            {
+                appWarpController.loginWithEmail(view?.login_userNameET?.text.toString())
+            }
+
+        if(respond.equals("onConnectDone-true"))
+        {
+            activity?.supportFragmentManager?.beginTransaction()
+                    ?.replace(R.id.main_fragment_placeHolder,MainScreen())?.commit()
+
+        }
+
+        if(respond.equals("onConnectDone-false"))
+        {
+            Util.makeToast(context, "appWarp Fail")
+        }
     }
 
-    fun makeToast(string: String)
-    {
-        Toast.makeText(context,string,Toast.LENGTH_SHORT).show()
-    }
 
 
 }
+
+//TODO 1) get current User If still logged in!

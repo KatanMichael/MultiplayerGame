@@ -1,13 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Main Screen!"
-        android:textSize="40sp"
-        />
+        android:id="@+id/mainScreen_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="501dp"
+        android:layout_marginEnd="109dp"
+        android:layout_marginStart="110dp"
+        android:layout_marginTop="25dp"
+        android:text="Main Screen"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</LinearLayout>
+    <Button
+        android:id="@+id/mainScreen_singlePlayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="52dp"
+        android:layout_marginEnd="92dp"
+        android:layout_marginStart="95dp"
+        android:layout_marginTop="84dp"
+        android:text="Single Player"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/mainScreen_multiPlayer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mainScreen_title" />
+
+    <Button
+        android:id="@+id/mainScreen_multiPlayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="263dp"
+        android:layout_marginEnd="101dp"
+        android:layout_marginStart="101dp"
+        android:layout_marginTop="52dp"
+        android:text="MultiPlayer"
+        android:textSize="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mainScreen_singlePlayer" />
+
+</android.support.constraint.ConstraintLayout>
