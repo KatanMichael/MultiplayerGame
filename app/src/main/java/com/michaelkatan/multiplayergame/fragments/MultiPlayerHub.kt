@@ -26,7 +26,7 @@ class MultiPlayerHub: Fragment(), View.OnClickListener, Observer
 
     var roomsList = ArrayList<Room>()
     var roomAdapter = MultiHubRoomAdapter(roomsList,this,activity?.applicationContext)
-
+    var roomFromAppWarp = ArrayList<Room>()
 
     val appWarpController = AppWarpController
     val fireBaseController = FirebaseController
@@ -60,6 +60,9 @@ class MultiPlayerHub: Fragment(), View.OnClickListener, Observer
         multiHub_refresh.setOnClickListener()
         {
             appWarpController.getRoomList()
+            val refresh = refreshAdapter()
+
+            refresh.execute()
         }
 
     }
@@ -71,8 +74,12 @@ class MultiPlayerHub: Fragment(), View.OnClickListener, Observer
         if(msgNotif.targetClass.equals("roomList-hub"))
         {
             val listOfRoom = msgNotif.content as ArrayList<Room>
-
+            roomFromAppWarp = listOfRoom
             roomsList.clear()
+
+            roomsList.addAll(listOfRoom)
+            roomsList.add(Room("Test",3,"TestId"))
+
             roomAdapter.notifyDataSetChanged()
 
             if(listOfRoom.size > 0)
@@ -84,6 +91,7 @@ class MultiPlayerHub: Fragment(), View.OnClickListener, Observer
                     roomAdapter.notifyDataSetChanged()
                 }
             }
+
 
         }
 
@@ -121,8 +129,11 @@ class MultiPlayerHub: Fragment(), View.OnClickListener, Observer
     {
         override fun doInBackground(vararg listOfRooms: ArrayList<Room>?): Int
         {
+            for(i in 0..5)
+            {
+                Thread.sleep(1000)
+            }
 
-            roomsList.clear()
 
             return 1
         }
@@ -131,12 +142,17 @@ class MultiPlayerHub: Fragment(), View.OnClickListener, Observer
 
         override fun onProgressUpdate(vararg values: Int?)
         {
-            roomAdapter.notifyDataSetChanged()
+
         }
 
         override fun onPostExecute(result: Int?)
         {
+            roomsList.clear()
+            roomsList.addAll(roomFromAppWarp)
+            Log.d("Simon","${roomsList.size}")
+            multiHub_recyclerView.adapter = MultiHubRoomAdapter(roomsList,this@MultiPlayerHub,null)
 
+            Util.makeToast(context,"Post!")
         }
     }
 
