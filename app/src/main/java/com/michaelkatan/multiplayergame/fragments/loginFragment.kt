@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.michaelkatan.multiplayergame.R
 import com.michaelkatan.multiplayergame.controllers.AppWarpController
 import com.michaelkatan.multiplayergame.controllers.FirebaseController
+import com.michaelkatan.multiplayergame.util.NotifyMsg
 import com.michaelkatan.multiplayergame.util.Util
 import kotlinx.android.synthetic.main.login_fragment.view.*
 import java.util.*
@@ -62,32 +63,37 @@ class loginFragment : Fragment(), Observer
     {
         Log.d("MyApp","in the update method")
 
-        var respond : String?
+        var respond : NotifyMsg
 
-        respond = p1 as String?
+        respond = p1 as NotifyMsg
 
-        if(respond.equals("signIn-false"))
+        if(respond.targetClass.equals("signIn"))
+        {
+            if(respond.content.equals("false"))
             {
                 Util.makeToast(context,"Login Failed")
                 Log.d("MyApp","Login Failed")
 
             }
-        if(respond.equals("signIn-true"))
+            if(respond.content.equals("true"))
             {
                 appWarpController.loginWithEmail(view?.login_userNameET?.text.toString())
             }
 
-        if(respond.equals("onConnectDone-true"))
-        {
-            activity?.supportFragmentManager?.beginTransaction()
-                    ?.replace(R.id.main_fragment_placeHolder,MainScreen())?.commit()
+            if(respond.content.equals("onConnectDone-true"))
+            {
+                activity?.supportFragmentManager?.beginTransaction()
+                        ?.replace(R.id.main_fragment_placeHolder,MainScreen())?.commit()
 
+            }
+
+            if(respond.content.equals("onConnectDone-false"))
+            {
+                Util.makeToast(context, "appWarp Fail")
+            }
         }
 
-        if(respond.equals("onConnectDone-false"))
-        {
-            Util.makeToast(context, "appWarp Fail")
-        }
+
     }
 
 

@@ -6,6 +6,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.michaelkatan.multiplayergame.util.NotifyMsg
 import java.util.*
 
 object FirebaseController: Observable()
@@ -26,13 +27,13 @@ object FirebaseController: Observable()
                         {
                             user = task.result.user
                             setChanged()
-                            notifyObservers("signIn-true")
+                            notifyObservers(NotifyMsg("signIn","true"))
                             currantUser = user
 
                         }else
                         {
                             setChanged()
-                            notifyObservers("signIn-false")
+                            notifyObservers(NotifyMsg("signIn","false"))
 
                         }
                     }
@@ -43,6 +44,7 @@ object FirebaseController: Observable()
 
     fun signUp(email: String, password: String)
     {
+
 
         var user : FirebaseUser?
 
@@ -55,7 +57,7 @@ object FirebaseController: Observable()
                             {
                                 user = task.result.user
                                 setChanged()
-                                notifyObservers("signUp-true")
+                                notifyObservers(NotifyMsg("signUp","signUp-true"))
                                 currantUser = user
 
                             }else
@@ -64,7 +66,7 @@ object FirebaseController: Observable()
                                 Log.d("MyApp",task.exception.toString())
 
                                 setChanged()
-                                notifyObservers("signUp-false")
+                                notifyObservers(NotifyMsg("signUp","signUp-false"))
                             }
                         }
 

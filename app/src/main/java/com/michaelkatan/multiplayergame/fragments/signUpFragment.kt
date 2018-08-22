@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.michaelkatan.multiplayergame.R
 import com.michaelkatan.multiplayergame.controllers.AppWarpController
 import com.michaelkatan.multiplayergame.controllers.FirebaseController
+import com.michaelkatan.multiplayergame.util.NotifyMsg
 import com.michaelkatan.multiplayergame.util.Util
 import kotlinx.android.synthetic.main.signup_fragment.*
 import kotlinx.android.synthetic.main.signup_fragment.view.*
@@ -57,32 +58,40 @@ class signUpFragment : Fragment(), Observer
     {
         Log.d("MyApp","in the update method")
 
-        var respond : String?
+        var respond : NotifyMsg
 
-        respond = p1 as String?
+        respond = p1 as NotifyMsg
 
-        if(respond.equals("signUp-false"))
+        if(respond.targetClass.equals("signUp"))
         {
-            Util.makeToast( context,"Registration Failed")
-            Log.d("MyApp","Registration Failed")
+            if(respond.equals("signUp-false"))
+            {
+                Util.makeToast( context,"Registration Failed")
+                Log.d("MyApp","Registration Failed")
 
-        }
-        if(respond.equals("signUp-true"))
-        {
-            appWarpController.loginWithEmail(signUp_email.text.toString())
-        }
-
-        if(respond.equals("onConnectDone-true"))
-        {
-            activity?.supportFragmentManager?.beginTransaction()
-                    ?.replace(R.id.main_fragment_placeHolder,MainScreen())?.commit()
-
+            }
+            if(respond.equals("signUp-true"))
+            {
+                appWarpController.loginWithEmail(signUp_email.text.toString())
+            }
         }
 
-        if(respond.equals("onConnectDone-false"))
+
+        if(respond.targetClass.equals("signIn"))
         {
-            Util.makeToast(context , "appWarp Fail")
+            if(respond.content.equals("onConnectDone-true"))
+            {
+                activity?.supportFragmentManager?.beginTransaction()
+                        ?.replace(R.id.main_fragment_placeHolder,MainScreen())?.commit()
+
+            }
+
+            if(respond.content.equals("onConnectDone-false"))
+            {
+                Util.makeToast(context , "appWarp Fail")
+            }
         }
+
 
     }
 

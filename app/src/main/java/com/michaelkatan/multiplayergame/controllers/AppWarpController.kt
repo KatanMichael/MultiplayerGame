@@ -1,5 +1,6 @@
 package com.michaelkatan.multiplayergame.controllers
 
+import com.michaelkatan.multiplayergame.util.NotifyMsg
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient
 import com.shephertz.app42.gaming.multiplayer.client.command.WarpResponseResultCode
 import com.shephertz.app42.gaming.multiplayer.client.events.*
@@ -52,11 +53,11 @@ object AppWarpController : Observable(), ConnectionRequestListener, RoomRequestL
             if(event.result == WarpResponseResultCode.SUCCESS)
             {
                 setChanged()
-                notifyObservers("onConnectDone-true")
+                notifyObservers(NotifyMsg("signIn","onConnectDone-true"))
             }else
             {
                 setChanged()
-                notifyObservers("onConnectDone-false")
+                notifyObservers(NotifyMsg("signIn","onConnectDone-false"))
             }
 
 

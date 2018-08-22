@@ -22,6 +22,11 @@ class MainScreen : Fragment()
             Util.makeToast(context,"WIP")
         }
 
+        view.mainScreen_multiPlayer.setOnClickListener()
+        {
+
+        }
+
         return view
     }
 }
