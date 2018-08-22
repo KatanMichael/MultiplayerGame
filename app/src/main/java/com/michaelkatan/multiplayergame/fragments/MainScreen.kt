@@ -24,6 +24,8 @@ class MainScreen : Fragment()
 
         view.mainScreen_multiPlayer.setOnClickListener()
         {
+            activity?.supportFragmentManager?.beginTransaction()
+                    ?.replace(R.id.main_fragment_placeHolder,MultiPlayerHub())?.commit()
 
         }
 

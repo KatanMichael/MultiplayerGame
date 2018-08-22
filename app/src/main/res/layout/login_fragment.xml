@@ -65,12 +65,14 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="-4dp"
             android:layout_marginRight="-4dp"
-            android:inputType="text"
+            android:inputType="textEmailAddress"
             android:maxLength="50"
             android:maxLines="1"
             android:singleLine="true"
             android:textColor="@color/blue_grey_800"
-            android:theme="@style/EditText.Green" />
+            android:theme="@style/EditText.Green"
+
+            />
 
         <View
             android:layout_width="0dp"

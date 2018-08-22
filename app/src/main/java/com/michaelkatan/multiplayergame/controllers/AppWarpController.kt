@@ -1,11 +1,14 @@
 package com.michaelkatan.multiplayergame.controllers
 
+import android.util.Log
+import com.michaelkatan.multiplayergame.classes.Room
 import com.michaelkatan.multiplayergame.util.NotifyMsg
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient
 import com.shephertz.app42.gaming.multiplayer.client.command.WarpResponseResultCode
 import com.shephertz.app42.gaming.multiplayer.client.events.*
 import com.shephertz.app42.gaming.multiplayer.client.listener.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 object AppWarpController : Observable(), ConnectionRequestListener, RoomRequestListener,
         ZoneRequestListener, LobbyRequestListener, UpdateRequestListener,
@@ -40,6 +43,20 @@ object AppWarpController : Observable(), ConnectionRequestListener, RoomRequestL
         warpClient!!.connectWithUserName(userName)
     }
 
+    fun getRoomList()
+    {
+        warpClient?.getRoomInRange(1,5)
+    }
+
+    fun hostNewRoom(roomName: String)
+    {
+        warpClient?.createRoom(roomName,roomName,2,null)
+    }
+
+    fun joinRoomWithId(roomId: String)
+    {
+        warpClient?.joinRoom(roomId)
+    }
 
     //-----ConnectionRequestListener---////
     override fun onDisconnectDone(p0: ConnectEvent?) {
@@ -52,8 +69,9 @@ object AppWarpController : Observable(), ConnectionRequestListener, RoomRequestL
         {
             if(event.result == WarpResponseResultCode.SUCCESS)
             {
-                setChanged()
-                notifyObservers(NotifyMsg("signIn","onConnectDone-true"))
+
+                warpClient?.joinLobby()
+
             }else
             {
                 setChanged()
@@ -108,8 +126,12 @@ object AppWarpController : Observable(), ConnectionRequestListener, RoomRequestL
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onJoinRoomDone(p0: RoomEvent?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onJoinRoomDone(joinRoomEvent: RoomEvent?)
+    {
+        if(joinRoomEvent != null)
+        {
+            warpClient?.startGame()
+        }
     }
 
     override fun onSetCustomRoomDataDone(p0: LiveRoomInfoEvent?) {
@@ -135,24 +157,84 @@ object AppWarpController : Observable(), ConnectionRequestListener, RoomRequestL
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onGetAllRoomsDone(p0: AllRoomsEvent?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onGetAllRoomsDone(roomEvent: AllRoomsEvent?)
+    {
+        if(roomEvent != null)
+        {
+            val listOfRooms =  ArrayList<Room>(roomEvent.roomsCount)
+            val roomIdArray = roomEvent.roomIds
+
+            Log.d("Simon","Number of Rooms(Controller) : ${roomEvent.roomsCount}")
+
+            if(roomEvent.roomsCount == 0)
+            {
+                setChanged()
+                notifyObservers(NotifyMsg("roomList-hub", listOfRooms))
+
+            }else
+            {
+                for(i in 0..roomIdArray.size)
+                {
+                    listOfRooms[i].roomId = roomIdArray[i]
+                }
+
+                setChanged()
+                notifyObservers(NotifyMsg("roomList-hub", listOfRooms))
+            }
+        }
+
     }
 
     override fun onGetOnlineUsersCountDone(p0: AllUsersEvent?) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onGetMatchedRoomsDone(p0: MatchedRoomsEvent?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onGetMatchedRoomsDone(roomEvent: MatchedRoomsEvent?)
+    {
+
+        if(roomEvent != null)
+        {
+            var listOfRooms =  ArrayList<Room>()
+
+
+            Log.d("Simon","Number of Rooms(Controller) : ${roomEvent.roomsData.size}")
+
+            if(roomEvent.roomsData.size == 0)
+            {
+                setChanged()
+                notifyObservers(NotifyMsg("roomList-hub", listOfRooms))
+
+            }else
+            {
+                val size = roomEvent.roomsData.size
+                Log.d("Simon","Size (Controller): $size")
+
+
+                for(i in 0..size-1)
+                {
+                    val hostName = roomEvent.roomsData[i].id
+
+                    listOfRooms.add(Room(hostName,1,hostName))
+                }
+
+                setChanged()
+                notifyObservers(NotifyMsg("roomList-hub", listOfRooms))
+            }
+        }
     }
 
     override fun onGetOnlineUsersDone(p0: AllUsersEvent?) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onCreateRoomDone(p0: RoomEvent?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onCreateRoomDone(createRoomEvent: RoomEvent?)
+    {
+        if(createRoomEvent != null)
+        {
+            setChanged()
+            notifyObservers(NotifyMsg("multi-hub-createRoom",createRoomEvent.data.id))
+        }
+
     }
 
     override fun onSetCustomUserDataDone(p0: LiveUserInfoEvent?) {
@@ -162,8 +244,11 @@ object AppWarpController : Observable(), ConnectionRequestListener, RoomRequestL
 
 
     /////-------------LobbyRequestListener------------////////
-    override fun onJoinLobbyDone(p0: LobbyEvent?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onJoinLobbyDone(p0: LobbyEvent?)
+    {
+        setChanged()
+        notifyObservers(NotifyMsg("signIn","onConnectDone-true"))
+
     }
 
     override fun onSubscribeLobbyDone(p0: LobbyEvent?) {
@@ -245,8 +330,10 @@ object AppWarpController : Observable(), ConnectionRequestListener, RoomRequestL
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onGameStarted(p0: String?, p1: String?, p2: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onGameStarted(p0: String?, p1: String?, p2: String?)
+    {
+        setChanged()
+        notifyObservers(NotifyMsg("multi-hub-joinRoom",Integer(1)))
     }
 
     override fun onChatReceived(p0: ChatEvent?) {
@@ -279,8 +366,10 @@ object AppWarpController : Observable(), ConnectionRequestListener, RoomRequestL
     /////------NotifyListener----///////////
 
     //-------TurnBasedRoomListener-------///////
-    override fun onStartGameDone(p0: Byte) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onStartGameDone(p0: Byte)
+    {
+        setChanged()
+        notifyObservers(NotifyMsg("multi-hub-joinRoom",Integer(1)))
     }
 
     override fun onGetGameStatusDone(p0: Byte, p1: Boolean) {
