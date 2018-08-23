@@ -31,12 +31,14 @@ class MultiPlayerHub: Fragment(), View.OnClickListener, Observer
     val appWarpController = AppWarpController
     val fireBaseController = FirebaseController
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
         val view = inflater.inflate(R.layout.multiplayer_hub_fragment, container,false)
 
         appWarpController.addObserver(this)
         fireBaseController.addObserver(this)
+
 
         return view
     }
@@ -82,6 +84,7 @@ class MultiPlayerHub: Fragment(), View.OnClickListener, Observer
 
             roomAdapter.notifyDataSetChanged()
 
+
             if(listOfRoom.size > 0)
             {
                 for(room in listOfRoom)
@@ -106,9 +109,15 @@ class MultiPlayerHub: Fragment(), View.OnClickListener, Observer
         {
             val result : Integer = msgNotif.content as Integer
 
+
+
             if(result.equals(1))
             {
                 Log.d("Simon","room joined")
+                activity?.runOnUiThread()
+                {
+                    Util.makeNotification(context,"TestTitle","TestMsg",6)
+                }
 
             }else
             {
@@ -119,10 +128,15 @@ class MultiPlayerHub: Fragment(), View.OnClickListener, Observer
     }
 
 
-    override fun onClick(p0: View?)
+    override fun onClick(view: View?)
     {
-
-
+        when(view?.id)
+        {
+            R.id.multiHub_room_joinBtn ->
+            {
+                Util.makeToast(context,"Room Id: ")
+            }
+        }
     }
 
     inner class refreshAdapter : AsyncTask<ArrayList<Room>, Int, Int>()
@@ -155,5 +169,7 @@ class MultiPlayerHub: Fragment(), View.OnClickListener, Observer
             Util.makeToast(context,"Post!")
         }
     }
+
+
 
 }

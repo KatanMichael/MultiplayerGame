@@ -89,7 +89,7 @@ class loginFragment : Fragment(), Observer
 
             if(respond.content.equals("onConnectDone-false"))
             {
-                Util.makeToast(context, "appWarp Fail")
+                //Util.makeToast(context, "appWarp Fail")
             }
         }
 

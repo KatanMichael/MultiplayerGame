@@ -58,6 +58,7 @@ object AppWarpController : Observable(), ConnectionRequestListener, RoomRequestL
         warpClient?.joinRoom(roomId)
     }
 
+
     //-----ConnectionRequestListener---////
     override fun onDisconnectDone(p0: ConnectEvent?) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -302,8 +303,9 @@ object AppWarpController : Observable(), ConnectionRequestListener, RoomRequestL
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onUserJoinedRoom(p0: RoomData?, p1: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onUserJoinedRoom(roomData: RoomData?, userName: String?)
+    {
+
     }
 
     override fun onPrivateChatReceived(p0: String?, p1: String?) {
